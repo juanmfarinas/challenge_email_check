@@ -9,20 +9,7 @@ from email.header import decode_header
 from prettytable import PrettyTable
 import mysql.connector
 
-# Parametros Mail
-# Name: Challenge ML JMFG 2024_07
-GMAIL_IMAP = 'imap.gmail.com'
-GMAIL_USER = 'challenge.ml.jmf.202407@gmail.com'
-# password: Pass_202407_$#3
-# gmail_pass es una app password, google no permite usar user y pass de
-# de la cuenta para loguearse
-GMAIL_PASS = 'auhd zyci jmak vyrw'
 
-# Parametros DB
-DB_USER = 'sql10717934'
-DB_PASS = 'jbqMs23BPD'
-DB_HOST = 'sql10.freemysqlhosting.net'
-DB_NAME = 'sql10717934'
 
 # Funciones para la DB
 def connect_to_db():
