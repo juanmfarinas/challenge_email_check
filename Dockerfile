@@ -11,9 +11,5 @@ COPY . /app
 RUN pip install --upgrade pip
 RUN pip install setuptools wcwidth wheel mysql-connector-python keyboard prettytable
 
-
-# Make port 8080 available to the world outside this container
-EXPOSE 8080
-
 # Run app.py when the container launches
 CMD python3 ./mail_check.py
