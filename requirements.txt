@@ -1,0 +1,4 @@
+keyboard~=0.13.5
+mysql~=0.0.3
+mysql-connector-python~=9.0.0
+prettytable~=3.10.0

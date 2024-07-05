@@ -9,7 +9,20 @@ from email.header import decode_header
 from prettytable import PrettyTable
 import mysql.connector
 
+# Parametros Mail
+# Name: Challenge ML JMFG 2024_07
+GMAIL_IMAP = 'imap.gmail.com'
+GMAIL_USER = 'challenge.ml.jmf.202407@gmail.com'
+# password: Pass_202407_$#3
+# gmail_pass es una app password, google no permite usar user y pass de
+# de la cuenta para loguearse
+GMAIL_PASS = 'auhd zyci jmak vyrw'
 
+# Parametros DB
+DB_USER = 'sql10717934'
+DB_PASS = 'jbqMs23BPD'
+DB_HOST = 'sql10.freemysqlhosting.net'
+DB_NAME = 'sql10717934'
 
 # Funciones para la DB
 def connect_to_db():
@@ -138,9 +151,10 @@ def search_incident_emails():
     # selecciono inbox
     mail.select("inbox")
 
-    fecha_u = fecha_ultimo_mail().strftime("%d-%b-%Y")
+    fecha_u = fecha_ultimo_mail()
 
     if fecha_u:
+        fecha_u = fecha_ultimo_mail().strftime("%d-%b-%Y")
         busqueda = "BODY incidente SINCE " + fecha_u
     else:
         busqueda = "BODY incidente"
@@ -213,24 +227,40 @@ def menu():
            \n
            ''')
 
-    action = int(input("Ingrese Opcion:  "))
+    action = input("Ingrese Opcion:  ")
+
+    if action.isnumeric():
+        action = int(action)
+    else:
+        action = 0
+
+
     if action == 1:
         print("\n")
         print("Se esta verificando si hay mails nuevos en la casilla.")
         print("En caso positivo se imprimir'a en pantalla la informaci'on del mail.")
         print("Pruebe enviando un mail a ", GMAIL_USER, " incluyendo en el body la palabra incidente")
         print("\n")
-        print("Presione q para finalizar chequeo")
+        if os.name == 'nt':
+            print("Presione q (windows) para finalizar chequeo")
+        else:
+            print("Presione ctrl c (macOs) para finalizar chequeo")
         print("\n")
         print("Chequeando...")
         print("\n")
         process = Process(target=my_loop)
         process.start()
         while process.is_alive():
-            if keyboard.is_pressed('q'):
-                process.terminate()
-                cls()
-                break
+            if os.name == 'nt':
+                if keyboard.is_pressed('q'):
+                    process.terminate()
+                    cls()
+                    break
+            else:
+                if os.system('read'):
+                    process.terminate()
+                    cls()
+                    break
 
     elif action == 2:
         q_mails = cant_emails()
@@ -262,9 +292,9 @@ def menu():
         print("\n")
     else:
         print("Opcion invalida.")
+        time.sleep(1)
+        cls()
     return action
-
-
 
 
 if __name__ == "__main__":
