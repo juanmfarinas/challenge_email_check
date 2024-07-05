@@ -227,13 +227,13 @@ def menu():
            \n
            ''')
 
+
     action = input("Ingrese Opcion:  ")
 
     if action.isnumeric():
         action = int(action)
     else:
         action = 0
-
 
     if action == 1:
         print("\n")
@@ -268,6 +268,7 @@ def menu():
         print("\n")
         input("Presione enter para continuar.")
         cls()
+
     elif action == 3:
         print("Informacion en la DB")
         print("\n")
