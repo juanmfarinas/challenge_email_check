@@ -210,6 +210,11 @@ def search_incident_emails():
 def cls():
     os.system('cls' if os.name=='nt' else 'clear')
 
+def my_loop():
+    while True:
+        search_incident_emails()
+        time.sleep(1)
+
 def menu():
     print('''
            Mail Check Menu
@@ -234,19 +239,36 @@ def menu():
         print("\n")
         print("Se esta verificando si hay mails nuevos en la casilla.")
         print("En caso positivo se imprimir'a en pantalla la informaci'on del mail.")
-        print("Casilla: ", GMAIL_USER, " Mails que incluyen en el body la palabra incidente")
+        print("Pruebe enviando un mail a ", GMAIL_USER, " incluyendo en el body la palabra incidente")
+        print("\n")
+        if os.name == 'nt':
+            print("Presione q (windows) para finalizar chequeo")
+        else:
+            print("Presione ctrl c (macOs) para finalizar chequeo")
         print("\n")
         print("Chequeando...")
         print("\n")
-        search_incident_emails()
-        input("Presione enter para continuar.")
-        cls()
+        process = Process(target=my_loop)
+        process.start()
+        while process.is_alive():
+            if os.name == 'nt':
+                if keyboard.is_pressed('q'):
+                    process.terminate()
+                    cls()
+                    break
+            else:
+                if os.system('read'):
+                    process.terminate()
+                    cls()
+                    break
+
     elif action == 2:
         q_mails = cant_emails()
         print("Cantidad de mails en la DB: ", q_mails)
         print("\n")
         input("Presione enter para continuar.")
         cls()
+
     elif action == 3:
         print("Informacion en la DB")
         print("\n")
