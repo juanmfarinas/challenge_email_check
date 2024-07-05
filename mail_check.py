@@ -13,14 +13,11 @@ import mysql.connector
 # Name: Challenge ML JMFG 2024_07
 GMAIL_IMAP = 'imap.gmail.com'
 GMAIL_USER = 'challenge.ml.jmf.202407@gmail.com'
-# password: Pass_202407_$#3
-# gmail_pass es una app password, google no permite usar user y pass de
-# de la cuenta para loguearse
-GMAIL_PASS = 'auhd zyci jmak vyrw'
+GMAIL_PASS = ''
 
 # Parametros DB
 DB_USER = 'sql10717934'
-DB_PASS = 'jbqMs23BPD'
+DB_PASS = ''
 DB_HOST = 'sql10.freemysqlhosting.net'
 DB_NAME = 'sql10717934'
 
@@ -140,6 +137,52 @@ def borra_emails ():
     mail.close()
     mail.logout()
 
+def show_mails_casilla ():
+    mail = imaplib.IMAP4_SSL(GMAIL_IMAP)
+    mail.login(GMAIL_USER, GMAIL_PASS)
+
+    mail.select("inbox")
+    busqueda = "*"
+    result, data = mail.uid('Search', "All")
+    email_ids = data[0].split()
+
+    t = PrettyTable(['MailUID', 'Mail From', 'Fecha', 'Subject'])
+
+    for email_id in email_ids:
+        #mailUID
+        #print(email_id)
+
+        result, email_data = mail.uid('fetch', email_id, '(RFC822)')
+
+        raw_email = email_data[0][1]
+        raw_email_string = raw_email.decode('utf-8')
+        email_message = email.message_from_string(raw_email_string)
+
+        # fecha de recepcion
+        date_tuple = email.utils.parsedate_tz(email_message['Date'])
+        if date_tuple:
+            local_date = datetime.datetime.fromtimestamp(email.utils.mktime_tz(date_tuple))
+            local_message_date = "%s" % (str(local_date.strftime("%a, %d %b %Y %H:%M:%S")))
+        #print("Fecha de recepcion: " + str(local_date))
+
+        #mailFrom
+        email_from = str(email.header.make_header(email.header.decode_header(email_message['From'])))
+        #print("From: " + email_from)
+
+        #mailTo
+        email_to = str(email.header.make_header(email.header.decode_header(email_message['To'])))
+        #print("To: " + email_to)
+
+        #Subject
+        subject = str(email.header.make_header(email.header.decode_header(email_message['Subject'])))
+        #print("Subject: " + subject)
+
+        t.add_row([email_id,email_from,local_date,subject])
+
+    mail.close()
+    mail.logout()
+    print(t)
+
 def search_incident_emails():
     mail = imaplib.IMAP4_SSL(GMAIL_IMAP)
     mail.login(GMAIL_USER, GMAIL_PASS)
@@ -162,6 +205,8 @@ def search_incident_emails():
     # busco los mails que tengan en el body Incident y sean mas nuevos que la fecha max de la db
     result, data = mail.uid('Search', None, busqueda)
     email_ids = data[0].split()
+
+    new_mails = 0
 
     for email_id in email_ids:
         #mailUID
@@ -197,9 +242,18 @@ def search_incident_emails():
         existe_mail_en_db = existe_mail(email_id)
 
         if existe_mail_en_db == "FALSE":
+            new_mails = 1
             guardar_mail(email_id,local_date,email_from,subject)
             print("Nuevo mail de: ", email_from, " fecha: ", local_date, " subject: ", subject)
 
+    if new_mails == 1:
+        print("\n")
+        print("Finalizo la verificacion y carga en la DB.")
+        print("\n")
+    else:
+        print("\n")
+        print("No hay Mails Nuevos.")
+        print("\n")
 
     mail.close()
     mail.logout()
@@ -210,15 +264,23 @@ def search_incident_emails():
 def cls():
     os.system('cls' if os.name=='nt' else 'clear')
 
+def set_passwords():
+    global GMAIL_PASS, DB_PASS
+    GMAIL_PASS = input("Ingrese Password Mail:  ")
+    GMAIL_PASS = 'auhd zyci jmak vyrw'
+    DB_PASS= input("Ingrese Password DB:  ")
+    DB_PASS = 'jbqMs23BPD'
+
 def menu():
     print('''
            Mail Check Menu
            [1] - Verifica Mails
            [2] - Cantidad de mails en db
            [3] - Muestra mails en db
-           [4] - Limpia la base de datos
-           [5] - Limpia la casilla
-           [6] - Salir
+           [4] - Muestra mails en casilla
+           [5] - Limpia la base de datos
+           [6] - Limpia la casilla
+           [7] - Salir
            \n
            ''')
 
@@ -255,18 +317,26 @@ def menu():
         input("Presione enter para continuar.")
         cls()
     elif action == 4:
+        print("Informacion en la casilla")
+        print("\n")
+        show_mails_casilla()
+        print("\n")
+        input("Presione enter para continuar.")
+        cls()
+    elif action == 5:
         borra_tabla()
         crear_tabla()
         print("Tabla en DB limpia")
         print("\n")
         input("Presione enter para continuar.")
         cls()
-    elif action == 5:
+    elif action == 6:
         borra_emails()
         print("Casilla de mail limpia")
         print("\n")
         input("Presione enter para continuar.")
-    elif action == 6:
+        cls()
+    elif action == 7:
         print("El programa termino.")
         print("\n")
     else:
@@ -278,6 +348,8 @@ def menu():
 
 if __name__ == "__main__":
     cls()
+    set_passwords()
+    cls()
     action = menu()
-    while action != 6:
+    while action != 7:
         action = menu()
