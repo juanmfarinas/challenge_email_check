@@ -126,8 +126,8 @@ def borra_emails ():
     mail.login(GMAIL_USER, GMAIL_PASS)
 
     # Print response
-    print("Server Response:")
-    print(mail.welcome)
+    #print("Server Response: ")
+    #print(mail.welcome)
 
     # selecciono inbox
     mail.select("inbox")
