@@ -44,6 +44,10 @@ C:\Users\u199241\PycharmProjects\challenge_email_check\venv\Scripts\python.exe C
 
 Se encuentra subido en:
 
+https://hub.docker.com/r/juanmafg/challenge-email-check/tags
 
+Ejecutarlo con parametro -ti para poder tener input desde el teclado.
+
+docker run -ti juanmafg/challenge-email-check
 
 
