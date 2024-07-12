@@ -1,10 +1,8 @@
 import email
 import imaplib
-import keyboard
 import os
 import datetime
 import time
-from multiprocessing import Process
 from email.header import decode_header
 from prettytable import PrettyTable
 import mysql.connector
@@ -16,10 +14,10 @@ GMAIL_USER = 'challenge.ml.jmf.202407@gmail.com'
 GMAIL_PASS = ''
 
 # Parametros DB
-DB_USER = 'sql10717934'
+DB_USER = 'sql10719407'
 DB_PASS = ''
-DB_HOST = 'sql10.freemysqlhosting.net'
-DB_NAME = 'sql10717934'
+DB_HOST = 'sql10.freesqldatabase.com'
+DB_NAME = 'sql10719407'
 
 # Funciones para la DB
 def connect_to_db():
@@ -269,7 +267,7 @@ def set_passwords():
     GMAIL_PASS = input("Ingrese Password Mail:  ")
     GMAIL_PASS = 'auhd zyci jmak vyrw'
     DB_PASS= input("Ingrese Password DB:  ")
-    DB_PASS = 'jbqMs23BPD'
+    DB_PASS = 'Kr95An1Jci'
 
 def menu():
     print('''
